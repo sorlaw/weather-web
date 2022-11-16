@@ -1,16 +1,29 @@
-let au = async function (cityName) {
+const au = async function (cityName) {
   const weather = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=406387d5a875ae15925e4dbf8323e1bb`);
   return weather;
 };
 
-function secFunction(event) {
+const secFunction = async function (event) {
   if (event.key == "Enter") {
     let name = document.getElementById("test").value;
-    au(name)
+
+    let myPromise = au(name)
       .then((response) => response.json())
-      .then((resolve) => console.log(resolve));
+      .then((resolve) => resolve.weather[0].main);
+    let description = au(name)
+      .then((response) => response.json())
+      .then((resolve) => resolve.weather[0].description);
+
+    let main = await myPromise;
+    let desc = await description;
+    const elem = document.querySelector(".weather");
+    elem.classList.add("animate__fadeInUp");
+    elem.innerHTML = cekCuaca(main, desc);
+    setTimeout(() => {
+      elem.classList.remove("animate__fadeInUp");
+    }, 1000);
   }
-}
+};
 
 function cekCuaca(main, desc) {
   const Atmosphere = ["Mist", "Smoke", "Haze", "Dust", "Fog", "Sand", "Ash", "Squall", "Tornado"];
@@ -31,17 +44,7 @@ function cekCuaca(main, desc) {
   }
 }
 
-function myFunction() {
-  let name = document.getElementById("test").value;
-
-  au(name)
-    .then((response) => response.json())
-    .then(function (resolve) {
-      console.log(resolve.weather[0].main);
-    });
-}
-
-async function checkWeather() {
+const checkWeather = async function () {
   let name = document.getElementById("test").value;
 
   let myPromise = au(name)
@@ -54,5 +57,9 @@ async function checkWeather() {
   let main = await myPromise;
   let desc = await description;
   const elem = document.querySelector(".weather");
+  elem.classList.add("animate__fadeInUp");
   elem.innerHTML = cekCuaca(main, desc);
-}
+  setTimeout(() => {
+    elem.classList.remove("animate__fadeInUp");
+  }, 1000);
+};
