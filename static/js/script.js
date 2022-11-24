@@ -13,14 +13,30 @@ const secFunction = async function (event) {
     let description = au(name)
       .then((response) => response.json())
       .then((resolve) => resolve.weather[0].description);
+    let humidity = au(name)
+      .then((response) => response.json())
+      .then((resolve) => resolve.main.humidity);
+    let windspeed = au(name)
+      .then((response) => response.json())
+      .then((resolve) => resolve.wind.speed);
+    let temp = au(name)
+      .then((response) => response.json())
+      .then((resolve) => Math.round(resolve.main.temp - 273.15));
 
     let main = await myPromise;
     let desc = await description;
+    let hum = await humidity;
+    let winds = await windspeed;
+    let temperature = await temp;
     const elem = document.querySelector(".weather");
+    const elem2 = document.querySelector(".descWeather");
     elem.classList.add("animate__fadeInUp");
+    elem2.classList.add("animate__fadeInUp");
     elem.innerHTML = cekCuaca(main, desc);
+    elem2.innerHTML = cekCuaca2(hum, winds, temperature);
     setTimeout(() => {
       elem.classList.remove("animate__fadeInUp");
+      elem2.classList.remove("animate__fadeInUp");
     }, 1000);
   }
 };
@@ -54,7 +70,7 @@ function cekCuaca2(humidity, windspeed, temperature) {
 </div>
 <div class="temp">
   <img src="assets/thermometer.png" alt="" style="width: 50px;" class="icon"/>
-  <span class="text-desc"> ${temperature}°C</span>
+  <span class="text-desc">${temperature}°C</span>
 </div>`;
 }
 
@@ -75,7 +91,7 @@ const checkWeather = async function () {
     .then((resolve) => resolve.wind.speed);
   let temp = au(name)
     .then((response) => response.json())
-    .then((resolve) => resolve.main.temp);
+    .then((resolve) => Math.round(resolve.main.temp - 273.15));
 
   let main = await myPromise;
   let desc = await description;
